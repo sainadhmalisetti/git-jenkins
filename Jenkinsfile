@@ -3,22 +3,29 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Clean') {
             steps {
-                echo 'Getting source code'
+                bat 'if exist demo.exe del demo.exe'
             }
         }
 
-	stage('compile'){
-	    steps {
-		bat 'gcc demo.c'
-	    }
-	}
-        stage('Build') {
+        stage('Compile') {
             steps {
-		bat 'a.exe'
+                bat 'gcc demo.c -o demo.exe'
             }
         }
 
+        stage('Run') {
+            steps {
+                bat 'demo.exe'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'demo.exe'
+        }
     }
 }
